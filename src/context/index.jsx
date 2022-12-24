@@ -67,17 +67,54 @@ export const StateContextProvider = ({ children }) => {
     const allCampaigns = await getCampaigns()
     return allCampaigns.filter((campaign) => campaign.owner == address)
   }
-  // const getDonations = async () => {
-  //   const donations= await connect.call()
+
+  const donate = async (pid, amount) => {
+    const data = await contract.call('donateToCompaign', pid, {
+      value: ethers.utils.parseEther(amount),
+    })
+    return data
+  }
+  const getDonations = async (pId) => {
+    const donations = await contract.call('getDonators', pId)
+    const numberOfDonations = donations[0].length
+
+    const parsedDonations = []
+
+    for (let i = 0; i < numberOfDonations; i++) {
+      parsedDonations.push({
+        donator: donations[0][i],
+        donation: ethers.utils.formatEther(donations[1][i].toString()),
+      })
+    }
+
+    return parsedDonations
+  }
+
+  // const getDonations = async (pid) => {
+  //   try {
+  //     const donations = await contract.call('getDonators', pid)
+  //     const parseDonations = []
+  //     donations[0].forEach((_, index) => {
+  //       parseDonations.push({
+  //         donator: donations[0][index],
+  //         donation: ethers.utils.formatEther(donations[0][index].toString),
+  //       })
+  //     })
+  //     return parseDonations
+  //   } catch (error) {
+  //     console.log(error.message)
+  //   }
   // }
   return (
     <StateContext.Provider
       value={{
         address,
+        getDonations,
         contract,
         connect,
         cerateCompaign: publishCampaign,
         getCampaigns,
+        donate,
         getUserCampaigns,
       }}
     >

@@ -20,12 +20,11 @@ const CampaignDetails = () => {
 
   const fetchDonators = async () => {
     const data = await getDonations(state.pId)
-
     setDonators(data)
   }
 
   useEffect(() => {
-    // if (contract) fetchDonators()
+    if (contract) fetchDonators()
   }, [contract, address])
 
   const handleDonate = async () => {
@@ -63,7 +62,7 @@ const CampaignDetails = () => {
         </div>
 
         <div className="flex md:w-[150px] w-full flex-wrap justify-between gap-[30px]">
-          <CountBox title="Days Left" value={remainingDays} />
+          <CountBox title="Days Left" value={3 || remainingDays} />
           <CountBox
             title={`Raised of ${state.target}`}
             value={state.amountCollected}
